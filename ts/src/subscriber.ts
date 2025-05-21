@@ -5,7 +5,7 @@ const sc = StringCodec();
 async function runSubscriber() {
   const nc = await connect({ servers: "nats:4222" });
 
-  const sub = nc.subscribe("a2a.intent.summarize");
+  const sub = nc.subscribe("a2a.intent.summarize.>");
   console.log("🧠 Agent Beta is listening on 'a2a.intent.summarize'...");
 
   for await (const msg of sub) {

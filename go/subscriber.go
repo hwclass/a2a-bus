@@ -24,7 +24,7 @@ func main() {
 		panic(err)
 	}
 
-	_, err = nc.Subscribe("a2a.intent.summarize", func(m *nats.Msg) {
+	_, err = nc.Subscribe("a2a.intent.summarize.>", func(m *nats.Msg) {
 		var msg AgentMessage
 		err := json.Unmarshal(m.Data, &msg)
 		if err != nil {

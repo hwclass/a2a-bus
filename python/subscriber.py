@@ -17,7 +17,7 @@ async def run():
             summary = text[:20] + "... (summary)" if len(text) > 20 else text
             print("✅ Summary:", summary)
 
-    await nc.subscribe("a2a.intent.summarize", cb=message_handler)
+    await nc.subscribe("a2a.intent.summarize.>", cb=message_handler)
 
     print("🧠 Agent Beta is listening on 'a2a.intent.summarize'")
     while True:

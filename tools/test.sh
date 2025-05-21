@@ -8,4 +8,4 @@ echo "🧪 Testing with intent: $INTENT"
 echo "📝 Message: $MESSAGE"
 echo "🚀 Running simulator..."
 
-docker compose run --rm simulator "$INTENT" "$MESSAGE" 
+A2A_FROM="agent://alpha" docker compose run --rm simulator "$INTENT" "$MESSAGE"

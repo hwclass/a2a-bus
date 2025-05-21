@@ -15,7 +15,7 @@ if (!intentArg || textParts.length === 0) {
 
 const intent = intentArg;
 const text = textParts.join(" ");
-const subject = "a2a.intent.summarize";
+const subject = `a2a.intent.${intent}`;
 
 const sc = StringCodec();
 
@@ -31,7 +31,7 @@ async function run() {
       type: "agent.message",
       version: "a2a.v1",
       headers: {
-        from: "agent://simulator",
+        from: process.env.A2A_FROM || "agent://simulator",
         to: "agent://*",
         intent
       },

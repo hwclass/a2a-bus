@@ -1,4 +1,6 @@
-# 📨 a2a-bus — A Reference Event Bus for Agent-to-Agent (A2A) Protocols
+# 📨 a2a-bus
+
+### A Reference Event Bus for Agent-to-Agent (A2A) Protocols
 
 *__Because the ideas are:__*
 

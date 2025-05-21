@@ -1,42 +1,72 @@
 import { connect, StringCodec } from "nats";
 import { v4 as uuidv4 } from "uuid";
 
-const sc = StringCodec();
+// CLI usage: ts-node publisher.ts summarize.article "Your message text here"
 
-async function runPublisher() {
-  const nc = await connect({ servers: "localhost:4222" });
+console.log("Arguments received:", process.argv);
 
-  const message = {
-    event_id: uuidv4(),
-    timestamp: new Date().toISOString(),
-    type: "agent.message",
-    version: "a2a.v1",
-    headers: {
-      from: "agent://alpha",
-      to: "agent://beta",
-      intent: "summarize.article"
-    },
-    payload: {
-      input: { text: "Hello from the Alpha Agent!" },
-      tools: ["summarizer"],
-      context: {
-        user_id: "u-123",
-        session_id: "s-456",
-        language: "en"
-      }
-    },
-    meta: {
-      content_type: "application/json",
-      encoding: "utf-8",
-      schema_uri: "https://a2a.dev/schema/v1/agent-message.json"
-    }
-  };
+const [, , intentArg, ...textParts] = process.argv;
 
-  console.log("🧠 Publishing message to 'a2a.intent.summarize'");
-  nc.publish("a2a.intent.summarize", sc.encode(JSON.stringify(message)));
-
-  await nc.flush();
-  await nc.close();
+if (!intentArg || textParts.length === 0) {
+  console.error("❌ Usage: ts-node publisher.ts <intent> '<message text>'");
+  console.error("Received arguments:", { intentArg, textParts });
+  process.exit(1);
 }
 
-runPublisher().catch(console.error);
+const intent = intentArg;
+const text = textParts.join(" ");
+const subject = `a2a.intent.${intent}`;
+
+const sc = StringCodec();
+
+async function run() {
+  try {
+    console.log("Connecting to NATS...");
+    const nc = await connect({ servers: ["nats://nats:4222"] });
+    console.log("Connected to NATS successfully");
+
+    const message = {
+      event_id: uuidv4(),
+      timestamp: new Date().toISOString(),
+      type: "agent.message",
+      version: "a2a.v1",
+      headers: {
+        from: process.env.A2A_FROM || "agent://alpha",
+        to: "agent://*",
+        intent
+      },
+      payload: {
+        input: { text },
+        tools: [intent.split(".")[0]],
+        context: {
+          user_id: "test-user-alpha",
+          session_id: "session-alpha",
+          language: "en"
+        }
+      },
+      meta: {
+        content_type: "application/json",
+        encoding: "utf-8",
+        schema_uri: "https://a2a.dev/schema/v1/agent-message.json"
+      }
+    };
+
+    console.log(`🧠 Agent Alpha publishing to '${subject}'`);
+    console.log("📦 Message payload:", JSON.stringify(message, null, 2));
+
+    nc.publish(subject, sc.encode(JSON.stringify(message)));
+
+    await nc.flush();
+    await nc.close();
+
+    console.log("✅ Event published successfully.");
+  } catch (err) {
+    console.error("❌ Error in run():", err);
+    throw err;
+  }
+}
+
+run().catch((err) => {
+  console.error("❌ Failed to send event:", err);
+  process.exit(1);
+});
