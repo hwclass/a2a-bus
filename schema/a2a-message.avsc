@@ -1,0 +1,71 @@
+{
+  "type": "record",
+  "name": "AgentMessageEvent",
+  "namespace": "dev.a2a.schema",
+  "fields": [
+    { "name": "event_id", "type": "string" },
+    { "name": "timestamp", "type": "string" },
+    { "name": "type", "type": {
+      "type": "enum",
+      "name": "EventType",
+      "symbols": [
+        "agent_message", "agent_message_request", "agent_message_response",
+        "agent_message_error", "agent_heartbeat", "agent_capability_announce"
+      ]
+    }},
+    { "name": "version", "type": "string", "default": "a2a.v1" },
+    {
+      "name": "headers",
+      "type": {
+        "type": "record",
+        "name": "Headers",
+        "fields": [
+          { "name": "from", "type": "string" },
+          { "name": "to", "type": "string" },
+          { "name": "reply_to", "type": ["null", "string"], "default": null },
+          { "name": "trace_id", "type": ["null", "string"], "default": null },
+          { "name": "auth_token", "type": ["null", "string"], "default": null },
+          { "name": "intent", "type": "string" },
+          { "name": "ttl", "type": ["null", "int"], "default": null }
+        ]
+      }
+    },
+    {
+      "name": "payload",
+      "type": {
+        "type": "record",
+        "name": "Payload",
+        "fields": [
+          { "name": "input", "type": { "type": "map", "values": "string" } },
+          { "name": "tools", "type": ["null", { "type": "array", "items": "string" }], "default": null },
+          {
+            "name": "context",
+            "type": ["null", {
+              "type": "record",
+              "name": "Context",
+              "fields": [
+                { "name": "user_id", "type": ["null", "string"], "default": null },
+                { "name": "session_id", "type": ["null", "string"], "default": null },
+                { "name": "language", "type": ["null", "string"], "default": null }
+              ]
+            }],
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "meta",
+      "type": ["null", {
+        "type": "record",
+        "name": "Meta",
+        "fields": [
+          { "name": "content_type", "type": ["null", "string"], "default": "application/json" },
+          { "name": "encoding", "type": ["null", "string"], "default": "utf-8" },
+          { "name": "schema_uri", "type": ["null", "string"], "default": null }
+        ]
+      }],
+      "default": null
+    }
+  ]
+}

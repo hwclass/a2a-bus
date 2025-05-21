@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package a2a.v1;
+
+message AgentMessageEvent {
+  string event_id = 1;
+  string timestamp = 2;
+  EventType type = 3;
+  string version = 4;
+  Headers headers = 5;
+  Payload payload = 6;
+  Meta meta = 7;
+
+  enum EventType {
+    AGENT_MESSAGE = 0;
+    AGENT_MESSAGE_REQUEST = 1;
+    AGENT_MESSAGE_RESPONSE = 2;
+    AGENT_MESSAGE_ERROR = 3;
+    AGENT_HEARTBEAT = 4;
+    AGENT_CAPABILITY_ANNOUNCE = 5;
+  }
+
+  message Headers {
+    string from = 1;
+    string to = 2;
+    string reply_to = 3;
+    string trace_id = 4;
+    string auth_token = 5;
+    string intent = 6;
+    int32 ttl = 7;
+  }
+
+  message Payload {
+    map<string, string> input = 1;
+    repeated string tools = 2;
+
+    message Context {
+      string user_id = 1;
+      string session_id = 2;
+      string language = 3;
+    }
+    Context context = 3;
+  }
+
+  message Meta {
+    string content_type = 1;
+    string encoding = 2;
+    string schema_uri = 3;
+  }
+}

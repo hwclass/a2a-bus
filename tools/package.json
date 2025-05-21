@@ -1,0 +1,19 @@
+{
+  "name": "a2a-simulator",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/simulator.js"
+  },
+  "dependencies": {
+    "nats": "^2.18.1",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "@types/uuid": "^9.0.8",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  }
+}

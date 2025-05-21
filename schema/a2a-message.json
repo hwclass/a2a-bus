@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://a2a.dev/schema/v1/agent-message.json",
+  "title": "A2A Agent Message Event",
+  "type": "object",
+  "required": ["event_id", "timestamp", "type", "headers", "payload"],
+  "properties": {
+    "event_id": { "type": "string", "format": "uuid" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "type": {
+      "type": "string",
+      "enum": [
+        "agent.message",
+        "agent.message.request",
+        "agent.message.response",
+        "agent.message.error",
+        "agent.heartbeat",
+        "agent.capability.announce"
+      ]
+    },
+    "version": { "type": "string", "default": "a2a.v1" },
+    "headers": {
+      "type": "object",
+      "required": ["from", "to", "intent"],
+      "properties": {
+        "from": { "type": "string", "format": "uri" },
+        "to": { "type": "string" },
+        "reply_to": { "type": "string" },
+        "trace_id": { "type": "string", "format": "uuid" },
+        "auth_token": { "type": "string" },
+        "intent": { "type": "string" },
+        "ttl": { "type": "integer", "minimum": 100 }
+      }
+    },
+    "payload": {
+      "type": "object",
+      "required": ["input"],
+      "properties": {
+        "input": { "type": "object", "additionalProperties": true },
+        "tools": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "context": {
+          "type": "object",
+          "properties": {
+            "user_id": { "type": "string" },
+            "session_id": { "type": "string" },
+            "language": { "type": "string" }
+          },
+          "additionalProperties": true
+        }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "content_type": {
+          "type": "string",
+          "enum": ["application/json", "application/msgpack", "application/protobuf"]
+        },
+        "encoding": { "type": "string" },
+        "schema_uri": { "type": "string", "format": "uri" }
+      }
+    }
+  }
+}
